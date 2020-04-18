@@ -26,3 +26,4 @@ TODO
 * Fix indent-level arg
 * Make lineing up the assignments and comment blocks an option
 * Make diff output like `diff -u`
+* Setup github action to build and release
