@@ -34,7 +34,7 @@ func main() {
 		kong.UsageOnError(),
 	)
 	if cli.Version {
-		fmt.Println(fmt.Sprintf("Version: %v Git SHA: %v Build Time: %v", version, sha1, buildTime))
+		fmt.Printf("Version: %v Git SHA: %v Build Time: %v\n", version, sha1, buildTime)
 		os.Exit(0)
 	}
 
@@ -45,7 +45,6 @@ func main() {
 	}
 
 	files := FindFiles(cwd, cli.Recursive, cli.Paths)
-	// fmt.Println(files)
 
 	modifyFiles := !cli.Check && !cli.Diff
 
@@ -57,10 +56,10 @@ func main() {
 			changed++
 
 			if modifyFiles {
-				fmt.Println("Updating %v", file)
+				fmt.Printf("Updating %v\n", file)
 				writeFile(file, formatted)
 			} else if cli.Diff {
-				fmt.Println(fmt.Sprintf("File %v:", file))
+				fmt.Printf("File %v:\n", file)
 				printDiff(orignal, formatted)
 			}
 		}
@@ -68,9 +67,9 @@ func main() {
 	unchanged := total - changed
 
 	if modifyFiles {
-		fmt.Println(fmt.Sprintf("%v %v reformatted, %v %v left unchanged", changed, filePlural(changed), unchanged, filePlural(unchanged)))
+		fmt.Printf("%v %v reformatted, %v %v left unchanged\n", changed, filePlural(changed), unchanged, filePlural(unchanged))
 	} else {
-		fmt.Println(fmt.Sprintf("%v %v would have been reformatted, %v %v left unchanged", changed, filePlural(changed), unchanged, filePlural(unchanged)))
+		fmt.Printf("%v %v would have been reformatted, %v %v left unchanged\n", changed, filePlural(changed), unchanged, filePlural(unchanged))
 		if changed != 0 {
 			os.Exit(1)
 		}
@@ -95,7 +94,7 @@ func FindFiles(cwd string, recursive bool, paths []string) []string {
 	for _, currentPath := range paths {
 		fi, err := os.Stat(currentPath)
 		if err != nil {
-			fmt.Println(fmt.Sprintf("Cannot access %v", currentPath))
+			fmt.Printf("Cannot access %v\n", currentPath)
 			// TODO log err
 			continue
 		}
@@ -104,7 +103,7 @@ func FindFiles(cwd string, recursive bool, paths []string) []string {
 		case mode.IsDir():
 			dirFiles, err := ioutil.ReadDir(currentPath)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to list files in %v", currentPath))
+				fmt.Printf("Failed to list files in %v\n", currentPath)
 				continue
 			}
 
@@ -121,7 +120,7 @@ func FindFiles(cwd string, recursive bool, paths []string) []string {
 				files = append(files, currentPath)
 			}
 		default:
-			fmt.Println(fmt.Sprintf("File %v is not a regular file"))
+			fmt.Printf("File %v is not a regular file\n", currentPath)
 		}
 	}
 
