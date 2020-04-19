@@ -12,12 +12,19 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
+var (
+	version   string
+	sha1      string
+	buildTime string
+)
+
 var cli struct {
 	IndentLength int      `help:"Indent size in spaces" default:"2"`
 	Recursive    bool     `help:"Search recurively for .tf files"`
 	Check        bool     `help:"Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed"`
 	Diff         bool     `help:"Dont modify files but show diff of the changes"`
 	Paths        []string `arg optional name:"path" help:"Paths or files to format" type:"path"`
+	Version      bool     `help:"Displays version" short:"V"`
 }
 
 func main() {
@@ -26,6 +33,10 @@ func main() {
 		kong.Description("Formats terraform files. If no path is specified, the current working directory is used."),
 		kong.UsageOnError(),
 	)
+	if cli.Version {
+		fmt.Println(fmt.Sprintf("Version: %v Git SHA: %v Build Time: %v", version, sha1, buildTime))
+		os.Exit(0)
+	}
 
 	cwd, err := os.Getwd()
 	if len(cli.Paths) == 0 && err != nil {
