@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build
-        run: make -j2
+        run: go build -v
 
   publish:
     name: Publish
@@ -30,6 +30,16 @@ jobs:
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14
+        id: go
+
+      - name: Build multiarch
+        run: make -j4
+
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
