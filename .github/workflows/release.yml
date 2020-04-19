@@ -30,3 +30,7 @@ jobs:
 #        fi
       - name: Build
         run: go build -v .
+
+      - name: Build test
+        run: echo ls
+        if: contains(github.ref, "tags")
