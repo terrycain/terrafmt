@@ -14,17 +14,17 @@ Arguments:
   [<path> ...]    Paths or files to format
 
 Flags:
-      --help               Show context-sensitive help.
-      --indent-length=2    Indent size in spaces
-      --recursive          Search recurively for .tf files
-      --check              Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed
-      --diff               Dont modify files but show diff of the changes
-  -V, --version            Displays version
+      --help                         Show context-sensitive help.
+      --indent-length=2              Indent size in spaces
+      --recursive                    Search recurively for .tf files
+      --check                        Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed
+      --diff                         Dont modify files but show diff of the changes
+  -V, --version                      Displays version
+      --line-up-assignment-blocks    Line up blocks of assignments
+      --line-up-comment-blocks       Line up blocks of comments
+
 ```
 
-TODO
+## TODO
 
-* Fix indent-level arg
-* Make lineing up the assignments and comment blocks an option
 * Make diff output like `diff -u`
-* Setup github action to build and release

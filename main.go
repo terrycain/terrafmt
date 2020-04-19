@@ -19,12 +19,14 @@ var (
 )
 
 var cli struct {
-	IndentLength int      `help:"Indent size in spaces" default:"2"`
-	Recursive    bool     `help:"Search recurively for .tf files"`
-	Check        bool     `help:"Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed"`
-	Diff         bool     `help:"Dont modify files but show diff of the changes"`
-	Paths        []string `arg optional name:"path" help:"Paths or files to format" type:"path"`
-	Version      bool     `help:"Displays version" short:"V"`
+	IndentLength           int      `help:"Indent size in spaces" default:"2"`
+	Recursive              bool     `help:"Search recurively for .tf files"`
+	Check                  bool     `help:"Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed"`
+	Diff                   bool     `help:"Dont modify files but show diff of the changes"`
+	Paths                  []string `arg optional name:"path" help:"Paths or files to format" type:"path"`
+	Version                bool     `help:"Displays version" short:"V"`
+	LineUpAssignmentBlocks bool     `help:"Line up blocks of assignments"`
+	LineUpCommentBlocks    bool     `help:"Line up blocks of comments"`
 }
 
 func main() {
@@ -36,6 +38,10 @@ func main() {
 	if cli.Version {
 		fmt.Printf("Version: %v Git SHA: %v Build Time: %v\n", version, sha1, buildTime)
 		os.Exit(0)
+	}
+	if cli.IndentLength < 0 {
+		fmt.Println("Indent length must be 0 or greater")
+		os.Exit(1)
 	}
 
 	cwd, err := os.Getwd()
@@ -51,7 +57,7 @@ func main() {
 	total := len(files)
 	changed := 0
 	for _, file := range files {
-		orignal, formatted := FormatFile(file) // TODO add options
+		orignal, formatted := FormatFile(file, cli.IndentLength, cli.LineUpAssignmentBlocks, cli.LineUpCommentBlocks)
 		if orignal != formatted {
 			changed++
 
