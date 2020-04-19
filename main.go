@@ -144,5 +144,5 @@ func printDiff(orig, new string) {
 }
 
 func writeFile(filepath, data string) {
-	ioutil.WriteFile(filepath, []byte(data))
+	ioutil.WriteFile(filepath, []byte(data), 0644)
 }

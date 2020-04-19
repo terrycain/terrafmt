@@ -1,2 +1,3 @@
 .vscode
 terrafmt
+terrafmt*.gz
