@@ -19,7 +19,7 @@ var (
 )
 
 var cli struct {
-	IndentLength           int      `help:"Indent size in spaces" default:"2"`
+	IndentLength           int      `help:"Indent size in spaces" default:"4"`
 	Recursive              bool     `help:"Search recurively for .tf files"`
 	Check                  bool     `help:"Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed"`
 	Diff                   bool     `help:"Dont modify files but show diff of the changes"`
