@@ -10,10 +10,10 @@ sign {
   application_identity = "Developer ID Application: Terry Cain (UT7M7Z36B6)"
 }
 
-dmg {
-  output_path = "terrafmt.dmg"
-  volume_name = "Terraform Formatting Tool"
-}
+#dmg {
+#  output_path = "terrafmt.dmg"
+#  volume_name = "Terraform Formatting Tool"
+#}
 
 zip {
   output_path = "terrafmt.zip"

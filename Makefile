@@ -27,7 +27,7 @@ $(SIGNED_PLATFORMS):
 	mkdir -p 'terrafmt-$(os)-$(arch)'
 	GOOS=$(os) GOARCH=$(arch) go build -ldflags="-s -w" -o 'terrafmt-$(os)-$(arch)/terrafmt'
 	chmod +x 'terrafmt-$(os)-$(arch)/terrafmt'
-	cd 'terrafmt-$(os)-$(arch)' && gon ../gon_config.hcl
-
-	# rm -rf'terrafmt-$(os)-$(arch)'
+	cd 'terrafmt-$(os)-$(arch)' && ../gon ../gon_config.hcl
+	mv 'terrafmt-$(os)-$(arch)/terrafmt.zip' 'terrafmt-$(os)-$(arch).zip'
+	rm -rf'terrafmt-$(os)-$(arch)'
 

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature*
+      - 'feature/**'
     tags:
       - v*
 
@@ -23,26 +23,6 @@ jobs:
 
       - name: Build
         run: go build -v
-
-  publish_mac:
-    name: Publish Mac (Signed)
-    runs-on: macos-latest
-    needs: build
-    steps:
-
-      - name: Install certs
-        uses: apple-actions/import-codesign-certs@v1
-        with:
-          p12-file-base64: ${{ secrets.DEVELOPER_PFX }}
-          p12-password: ${{ secrets.PFX_PW }}
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: ^1.14 
-      - name: Get gon
-        run: go get github.com/mitchellh/gon
-      - name: Run gon
-        run: gon --help
 
   publish:
     name: Publish
@@ -87,16 +67,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./terrafmt-darwin-386.tar.gz
           asset_name: terrafmt-darwin-386.tar.gz
-          asset_content_type: application/x-gtar
-
-      - name: Upload Release Asset Darwin amd64
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./terrafmt-darwin-amd64.tar.gz
-          asset_name: terrafmt-darwin-amd64.tar.gz
           asset_content_type: application/x-gtar
 
       - name: Upload Release Asset Linux 386
@@ -148,3 +118,60 @@ jobs:
           asset_path: ./terrafmt-windows-amd64.tar.gz
           asset_name: terrafmt-windows-amd64.tar.gz
           asset_content_type: application/x-gtar
+
+      - name: Save output URL
+        shell: bash
+        run: echo -n "${{ steps.create_release.outputs.upload_url }}" > output-url.txt
+
+      - name: Upload output URL
+        uses: actions/upload-artifact@v1
+        with:
+          name: output-url
+          path: output-url.txt
+
+  publish_mac:
+    name: Publish Mac (Signed)
+    runs-on: macos-latest
+    needs: publish
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Download output URL from Publish
+        uses: actions/download-artifact@v1
+        with:
+          name: output-url
+
+      - name: Set output URL
+        id: create_release
+        shell: bash
+        run: echo "::set-output name=upload_url::$(cat output-url/output-url.txt)"
+
+      - name: Install certs
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.DEVELOPER_PFX }}
+          p12-password: ${{ secrets.PFX_PW }}
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14 
+
+      - name: Get gon
+        run: wget https://github.com/mitchellh/gon/releases/download/v0.2.3/gon_macos.zip && unzip gon_macos.zip && chmod +x gon
+
+      - name: Build
+        run: make mac_release
+        env:
+          APPLE_APP_PW: ${{ secrets.APPLE_APP_PW}}
+
+      - name: Upload Release Asset Darwin amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./terrafmt-darwin-amd64.zip
+          asset_name: terrafmt-darwin-amd64.zip
+          asset_content_type: application/zip
