@@ -17,7 +17,7 @@ clean:
 	rm -f terrafmt terrafmt-*.tar.gz
 
 $(PLATFORMS):
-	GOOS=$(os) GOARCH=$(arch) go build -ldflags="-s -w" -o 'terrafmt-$(os)-$(arch)'
+	GOOS=$(os) GOARCH=$(arch) go build -ldflags="-s -w -X main.sha1=${GITHUB_SHA} -X main.buildTime=${now} -X main.version=${version}" -o 'terrafmt-$(os)-$(arch)'
 	chmod +x 'terrafmt-$(os)-$(arch)'
 	# Dodgyness so we can cross compile in parallel but end up with a tar.gz with terrafmt inside
 	tar --transform='flags=r;s|terrafmt-$(os)-$(arch)|terrafmt|' -czvf 'terrafmt-$(os)-$(arch).tar.gz' 'terrafmt-$(os)-$(arch)'
@@ -25,7 +25,7 @@ $(PLATFORMS):
 
 $(SIGNED_PLATFORMS):
 	mkdir -p 'terrafmt-$(os)-$(arch)'
-	GOOS=$(os) GOARCH=$(arch) go build -ldflags="-s -w" -o 'terrafmt-$(os)-$(arch)/terrafmt'
+	GOOS=$(os) GOARCH=$(arch) go build -ldflags="-s -w -X main.sha1=${GITHUB_SHA} -X main.buildTime=${now} -X main.version=${version}" -o 'terrafmt-$(os)-$(arch)/terrafmt'
 	chmod +x 'terrafmt-$(os)-$(arch)/terrafmt'
 	cd 'terrafmt-$(os)-$(arch)' && ../gon ../gon_config.hcl
 	mv 'terrafmt-$(os)-$(arch)/terrafmt.zip' 'terrafmt-$(os)-$(arch).zip'
