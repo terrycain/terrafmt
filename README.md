@@ -28,3 +28,5 @@ Flags:
 ## TODO
 
 * Make diff output like `diff -u`
+* Fix bug when searching for files (must be a better way to do this)
+* Sign and notarize mac binaries as Catalina gets unhappy
