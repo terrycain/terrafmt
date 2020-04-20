@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature*
     tags:
       - v*
 
@@ -22,6 +23,26 @@ jobs:
 
       - name: Build
         run: go build -v
+
+  publish_mac:
+    name: Publish Mac (Signed)
+    runs-on: macos-latest
+    needs: build
+    steps:
+
+      - name: Install certs
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.DEVELOPER_PFX }}
+          p12-password: ${{ secrets.PFX_PW }}
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14 
+      - name: Get gon
+        run: go get github.com/mitchellh/gon
+      - name: Run gon
+        run: gon --help
 
   publish:
     name: Publish
