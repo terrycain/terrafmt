@@ -29,5 +29,5 @@ $(SIGNED_PLATFORMS):
 	chmod +x 'terrafmt-$(os)-$(arch)/terrafmt'
 	cd 'terrafmt-$(os)-$(arch)' && ../gon ../gon_config.hcl
 	mv 'terrafmt-$(os)-$(arch)/terrafmt.zip' 'terrafmt-$(os)-$(arch).zip'
-	rm -rf'terrafmt-$(os)-$(arch)'
+	rm -rf 'terrafmt-$(os)-$(arch)'
 
