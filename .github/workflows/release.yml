@@ -202,7 +202,9 @@ jobs:
           name: docker-binary
 
       - name: Move binary
-        run: mv docker-binary/terrafmt terrafmt
+        run: |
+          mv docker-binary/terrafmt terrafmt
+          chmod 755 terrafmt
 
       - name: Login to docker hub
         uses: actions-hub/docker/login@master
