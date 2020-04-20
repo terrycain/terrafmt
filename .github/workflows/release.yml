@@ -192,6 +192,10 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+
       - name: Download terrafmt amd64
         uses: actions/download-artifact@v1
         with:
@@ -207,9 +211,16 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build :latest
-        run: docker build -t terrycain/terrafmt:latest .
+        run: |
+          docker build -t terrycain/terrafmt:latest .
+          docker tag terrycain/terrafmt:latest terrycain/terrafmt:${{ steps.get_version.outputs.version }}
 
       - name: Push to docker hub :latest
         uses: actions-hub/docker@master
         with:
           args: push terrycain/terrafmt:latest
+
+      - name: Push to docker hub :${{ steps.get_version.outputs.version }}
+        uses: actions-hub/docker@master
+        with:
+          args: push terrycain/terrafmt:${{ steps.get_version.outputs.version }}
