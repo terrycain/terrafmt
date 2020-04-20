@@ -13,6 +13,9 @@ mac_release: $(SIGNED_PLATFORMS)
 build:
 	go build -ldflags="-s -w -X main.sha1=${GITHUB_SHA} -X main.buildTime=${now} -X main.version=${version}"
 
+build_amd64:
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.sha1=${GITHUB_SHA} -X main.buildTime=${now} -X main.version=${version}"
+
 clean:
 	rm -f terrafmt terrafmt-*.tar.gz
 
