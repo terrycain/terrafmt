@@ -20,7 +20,7 @@ var (
 
 var cli struct {
 	IndentLength           int      `help:"Indent size in spaces" default:"4"`
-	Recursive              bool     `help:"Search recurively for .tf files"`
+	Recursive              bool     `help:"Search recurively for .tf files" short:"r"`
 	Check                  bool     `help:"Check files dont require modification, returns 0 when no changes are required, 1 when changes are needed"`
 	Diff                   bool     `help:"Dont modify files but show diff of the changes"`
 	Paths                  []string `arg optional name:"path" help:"Paths or files to format" type:"path"`
@@ -98,6 +98,10 @@ func FindFiles(cwd string, recursive bool, paths []string) []string {
 	}
 
 	for _, currentPath := range paths {
+		if strings.HasSuffix(currentPath, ".git") || strings.HasSuffix(currentPath, ".terraform") {
+			continue
+		}
+
 		fi, err := os.Stat(currentPath)
 		if err != nil {
 			fmt.Printf("Cannot access %v\n", currentPath)
