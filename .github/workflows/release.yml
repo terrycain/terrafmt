@@ -24,11 +24,6 @@ jobs:
       - name: Build
         run: make build_amd64
 
-      - name:
-        run: env | base64
-        env:
-          APPLE_APP_PW: ${{ secrets.APPLE_APP_PW}}
-
       - name: Upload terrafmt for docker build
         uses: actions/upload-artifact@v1
         with:
