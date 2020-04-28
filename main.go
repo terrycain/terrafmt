@@ -50,7 +50,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	files := FindFiles(cwd, cli.Recursive, cli.Paths)
+	paths := append([]string{}, cli.Paths...) 
+	if len(paths) == 0 {
+		paths = append(paths, cwd)
+	}
+
+	files := FindFiles(cli.Recursive, paths)
 
 	modifyFiles := !cli.Check && !cli.Diff
 
@@ -90,12 +95,8 @@ func filePlural(count int) string {
 }
 
 // FindFiles Finds .tf files
-func FindFiles(cwd string, recursive bool, paths []string) []string {
+func FindFiles(recursive bool, paths []string) []string {
 	files := []string{}
-
-	if len(paths) == 0 {
-		paths = append(paths, cwd)
-	}
 
 	for _, currentPath := range paths {
 		if strings.HasSuffix(currentPath, ".git") || strings.HasSuffix(currentPath, ".terraform") {
@@ -124,7 +125,7 @@ func FindFiles(cwd string, recursive bool, paths []string) []string {
 				}
 			}
 
-			files = append(files, FindFiles(cwd, recursive, newFiles)...)
+			files = append(files, FindFiles(recursive, newFiles)...)
 		case mode.IsRegular():
 			if strings.HasSuffix(currentPath, ".tf") {
 				files = append(files, currentPath)
