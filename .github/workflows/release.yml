@@ -181,6 +181,16 @@ jobs:
           asset_path: ./terrafmt-darwin-amd64.zip
           asset_name: terrafmt-darwin-amd64.zip
           asset_content_type: application/zip
+        
+      - name: Test1
+        run: |
+          unzip terrafmt-darwin-amd64.zip
+          ls -lah
+          codesign -dv --verbose=4 'terrafmt-darwin-amd64/terrafmt'
+          echo '1234'
+          codesign -d -r- --verbose=20 'terrafmt-darwin-amd64/terrafmt'
+      
+
 
 
   publish-docker:
