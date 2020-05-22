@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build multiarch
-        run: make -j4
+        run: make -j4 release
 
       - name: Get the version
         id: get_version
